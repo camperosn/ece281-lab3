@@ -72,7 +72,9 @@ architecture test_bench of thunderbird_fsm_tb is
 	signal w_i_right : std_logic := '0';
 	signal w_reset : std_logic := '0';
 	signal w_clk : std_logic := '0';
-	
+    signal w_f_Q : STD_LOGIC_VECTOR(7 downto 0) := "10000000";
+    signal w_f_Q_next: STD_LOGIC_VECTOR(7 downto 0) := "10000000";
+    	
 	-- Outputs
 	signal w_o_lights_L : std_logic_vector(2 downto 0) := "000";
 	signal w_o_lights_R : std_logic_vector(2 downto 0) := "000";
@@ -120,18 +122,18 @@ begin
 	   
 	   -- Enable - should begin cycle
 	   w_i_left <= '1'; wait for k_clk_period;
-	       assert w_o_lights_L = "100" report "bad left cycle 1" severity failure;
+	       assert w_o_lights_L = "001" report "bad left cycle 1" severity failure;
 	   wait for k_clk_period;
-	       assert w_o_lights_L = "110" report "bad left cycle 2" severity failure;
+	       assert w_o_lights_L = "011" report "bad left cycle 2" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_L = "111" report "bad left cycle 3" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_L = "000" report "bad left cycle 4" severity failure;
 	   wait for k_clk_period;
-	       assert w_o_lights_L = "100" report "bad left cycle 5" severity failure;
+	       assert w_o_lights_L = "001" report "bad left cycle 5" severity failure;
 	   -- Disable - should complete cycle then stop
 	   w_i_left <= '0'; wait for k_clk_period;
-	  	   assert w_o_lights_L = "110" report "bad left cycle 6" severity failure;
+	  	   assert w_o_lights_L = "011" report "bad left cycle 6" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_L = "111" report "bad left cycle 7" severity failure;
 	   wait for k_clk_period*2; -- wait 2 cycles
@@ -141,7 +143,7 @@ begin
 	   -- Test 2: Activate right, disable midway
         -- Enable - should begin cycle
 	   w_i_right <= '1'; wait for k_clk_period;
-	       assert w_o_lights_R = "000" report "bad right cycle 1" severity failure;
+	       assert w_o_lights_R = "001" report "bad right cycle 1" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_R = "011" report "bad right cycle 2" severity failure;
 	   wait for k_clk_period;
@@ -157,11 +159,33 @@ begin
 	       assert w_o_lights_R = "111" report "bad right cycle 7" severity failure;
 	   wait for k_clk_period*2; -- wait 2 cycles
 	       assert w_o_lights_R = "000" report "bad right cycle 8" severity failure;	   
-
-
 	   
-	   -- Test 5: Active both
-	   	
+	   -- Test 5: Activate left and right at the same time
+	   -- Enable - should begin cycle
+	   w_i_right <= '1';
+	   w_i_left <= '1';
+	   wait for k_clk_period;
+	       assert w_o_lights_R = "111" report "bad hazard cycle 1R" severity failure;
+	       assert w_o_lights_L = "111" report "bad hazard cycle 1L" severity failure;
+	   wait for k_clk_period;
+	       assert w_o_lights_R = "000" report "bad hazard cycle 2R" severity failure;
+	       assert w_o_lights_L = "000" report "bad hazard cycle 2L" severity failure;
+	   wait for k_clk_period;
+	       assert w_o_lights_R = "111" report "bad hazard cycle 3R" severity failure;
+	       assert w_o_lights_L = "111" report "bad hazard cycle 3L" severity failure;
+	   wait for k_clk_period;
+	       assert w_o_lights_R = "000" report "bad hazard cycle 4R" severity failure;
+	       assert w_o_lights_L = "000" report "bad hazard cycle 4L" severity failure;
+	   wait for k_clk_period;
+	       assert w_o_lights_R = "111" report "bad hazard cycle 5R" severity failure;
+	       assert w_o_lights_L = "111" report "bad hazard cycle 5L" severity failure;
+	   -- Disable - should complete cycle then stop
+	   w_i_right <= '0';
+	   w_i_left <= '0';	   
+	   wait for k_clk_period*3; -- Wait 3 cycles
+	       assert w_o_lights_R = "000" report "bad hazard cycle 6R" severity failure;
+	       assert w_o_lights_L = "000" report "bad hazard cycle 6L" severity failure;
+	       	   	
 	-- Tests complete
 	   	wait;
 	end process;
