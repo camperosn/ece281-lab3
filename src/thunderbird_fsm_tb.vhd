@@ -143,18 +143,18 @@ begin
 	   -- Test 2: Activate right, disable midway
         -- Enable - should begin cycle
 	   w_i_right <= '1'; wait for k_clk_period;
-	       assert w_o_lights_R = "001" report "bad right cycle 1" severity failure;
+	       assert w_o_lights_R = "100" report "bad right cycle 1" severity failure;
 	   wait for k_clk_period;
-	       assert w_o_lights_R = "011" report "bad right cycle 2" severity failure;
+	       assert w_o_lights_R = "110" report "bad right cycle 2" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_R = "111" report "bad right cycle 3" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_R = "000" report "bad right cycle 4" severity failure;
 	   wait for k_clk_period;
-	       assert w_o_lights_R = "001" report "bad right cycle 5" severity failure;
+	       assert w_o_lights_R = "100" report "bad right cycle 5" severity failure;
 	   -- Disable - should complete cycle then stop
 	   w_i_right <= '0'; wait for k_clk_period;
-	  	   assert w_o_lights_R = "011" report "bad right cycle 6" severity failure;
+	  	   assert w_o_lights_R = "110" report "bad right cycle 6" severity failure;
 	   wait for k_clk_period;
 	       assert w_o_lights_R = "111" report "bad right cycle 7" severity failure;
 	   wait for k_clk_period*2; -- wait 2 cycles
