@@ -123,9 +123,9 @@ begin
     o_lights_l(1) <= f_Q(6) OR f_Q(1) OR f_Q(0);
     o_lights_l(0) <= f_Q(6) OR f_Q(2) OR f_Q(1) OR f_Q(0);
     -- right to left
-    o_lights_r(2) <= f_Q(6) OR f_Q(5) OR f_Q(4) OR f_Q(3);
-    o_lights_r(1) <= f_Q(6) OR f_Q(4) OR f_Q(3);
-    o_lights_r(0) <= f_Q(6) OR f_Q(3);
+    o_lights_r(0) <= f_Q(6) OR f_Q(3);  
+    o_lights_r(1) <= f_Q(6) OR f_Q(5) OR f_Q(4) OR f_Q(3); 
+    o_lights_r(2) <= f_Q(6) OR f_Q(4) OR f_Q(3)
    
     ---------------------------------------------------------------------------------
 	
